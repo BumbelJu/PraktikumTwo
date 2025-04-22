@@ -1,26 +1,25 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class GameOfLifeView extends JComponent {
-    private final GameOfLifeModel gol = new GameOfLifeModel(19,19);
-
-    private int columns = gol.getColumns();
-    private int rows = gol.getRows();
-
-    public GameOfLifeModel getGameOfLifeModel(){
-        return gol;
+    private GameOfLifeModel gol;
+    private int columns;
+    private int rows;
+    public GameOfLifeView(GameOfLifeModel gol) {
+        this.gol = gol;
+        columns = gol.getColumns();
+        rows = gol.getRows();
     }
 
+
     public void paint(Graphics gc){
-        JComponent component = this;
-        Dimension d = new Dimension(200, 400);
-        component.setMinimumSize(d);
+        super.paint(gc);
 
         // Rechteck Größe berechnen
         double columnsSize = (double) getWidth() / columns;
         double rowSize = (double) getHeight() / rows;
 
-        super.paintComponent(gc);
         gc.setColor(Color.BLACK);
         for (int x = 0; x < getWidth(); x+= (int) columnsSize) {
             for(int y = 0; y < getHeight(); y+= (int) rowSize) {

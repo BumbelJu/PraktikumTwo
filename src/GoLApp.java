@@ -7,8 +7,12 @@ import java.awt.event.ActionListener;
 
 public class GoLApp extends SwingApp{
     public static boolean showComponents = false;
-    GameOfLifeView view = new GameOfLifeView();
-    int maxGeneration = 10;
+
+    int maxGeneration = 20;
+
+    private GameOfLifeView view;
+    public static GameOfLifeModel gameofLifeModel;
+
 
 
     @Override
@@ -19,7 +23,8 @@ public class GoLApp extends SwingApp{
 
     @Override
     protected JComponent createContent() {
-        return new GameOfLifeView();
+        this.view = new GameOfLifeView(gameofLifeModel);
+        return view;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class GoLApp extends SwingApp{
             statusBar.setBorder(bo);
         }
         statusBar.setToolTipText("Status");
-        String msg = "Hey die GUI scheint zu laufen :-)";
+        String msg = "Generation: ";
         Font font = status.getFont();
         int height = font.getSize() + 8;
         int width = 8 * msg.length();
@@ -57,19 +62,20 @@ public class GoLApp extends SwingApp{
         do{
             try {
                 Thread.sleep(500);
-                view.getGameOfLifeModel().nextGeneration();
-                view.repaint();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                // ignore
             }
-        } while(view.getGameOfLifeModel().isAlive() && view.getGameOfLifeModel().getGeneration() < maxGeneration);
+            gameofLifeModel.nextGeneration();
+            view.repaint();
+        } while(gameofLifeModel.isAlive() && gameofLifeModel.getGeneration() < maxGeneration);
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        GoLApp.showComponents = true;
+        GoLApp.gameofLifeModel = new GameOfLifeModel(19,19);
+        gameofLifeModel.setStartingGrid();
         SwingApp app = new GoLApp();
         app.startUp();
     }

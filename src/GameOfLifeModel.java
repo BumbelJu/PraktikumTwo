@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class GameOfLifeModel {
     private boolean[][] grid;
     private int generation;
@@ -5,13 +7,6 @@ public class GameOfLifeModel {
 
     GameOfLifeModel(int rows, int columns) {
         grid = new boolean[rows][columns];
-        // Werte setzen, damit das Array gefüllt wird und die Länge abgefragt werden kann.
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                grid[i][j] = false;
-            }
-        }
-        setStartingGrid();
     }
 
     public int getGeneration(){
@@ -19,26 +14,7 @@ public class GameOfLifeModel {
     }
 
     public void setStartingGrid(){
-        grid[8][6] = true;
-        grid[9][6] = true;
-        grid[10][6] = true;
-        grid[7][7] = true;
-        grid[9][7] = true;
-        grid[10][7] = true;
-        grid[11][7] = true;
-        grid[12][7] = true;
-        grid[11][8] = true;
-        grid[12][8] = true;
-        grid[8][11] = true;
-        grid[9][11] = true;
-//        grid[10][11] = true;
-//        grid[14][11] = true;
-//        grid[15][11] = true;
-//        grid[16][11] = true;
-//        grid[16][11] = true;
-//        grid[12][13] = true;
-//        grid[12][14] = true;
-//        grid[12][15] = true;
+        grid[1][2] = grid[2][3] = grid[3][1] = grid[3][2] = grid[3][3] = true;
     }
 
     public int getColumns(){
@@ -52,6 +28,7 @@ public class GameOfLifeModel {
     public boolean[][] getGrid(){
         return grid;
     }
+
 
     /**
      * Prüfe ob es noch lebende Zellen auf dem Spielfeld gibt.
@@ -72,10 +49,10 @@ public class GameOfLifeModel {
      * Berechne die nächste Generation des Game of Life Models
      */
     public void nextGeneration() {
-        boolean[][] nextState = new boolean[grid.length][grid[0].length];
+        boolean[][] nextState = new boolean[this.grid.length][this.grid[0].length];
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+        for (int i = 0; i < this.grid.length; i++) {
+            for (int j = 0; j < this.grid[i].length; j++) {
                 int counter = 0;
 
                 // Nachbarn zählen (8 Richtungen)
@@ -88,8 +65,8 @@ public class GameOfLifeModel {
                         // Berechnung zur Berechnung des jeweiligen Nachbarn
                         int horizontalerNachbarPos = i + dx;
                         int vertikaleNachbarPos = j + dy;
-                        if (horizontalerNachbarPos >= 0 && horizontalerNachbarPos < grid.length && vertikaleNachbarPos >= 0 && vertikaleNachbarPos < grid[0].length) {
-                            if (grid[horizontalerNachbarPos][vertikaleNachbarPos]) {
+                        if (horizontalerNachbarPos >= 0 && horizontalerNachbarPos < this.grid.length && vertikaleNachbarPos >= 0 && vertikaleNachbarPos < this.grid[0].length) {
+                            if (this.grid[horizontalerNachbarPos][vertikaleNachbarPos]) {
                                 counter++;
                             }
                         }
@@ -104,9 +81,8 @@ public class GameOfLifeModel {
             }
         }
         // Neue Generation übernehmen
-        grid = nextState;
+        this.grid = nextState;
         generation++;
-
     }
 
 
