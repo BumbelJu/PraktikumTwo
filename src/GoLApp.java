@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class GoLApp extends SwingApp{
     public static boolean showComponents = false;
 
-    int maxGeneration = 20;
+    int maxGeneration = 30;
 
     private GameOfLifeView view;
     public static GameOfLifeModel gameofLifeModel;
