@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 
 public class GoLApp extends SwingApp{
     public static boolean showComponents = false;
-
+    GameOfLifeView view = new GameOfLifeView();
+    int maxGeneration = 10;
 
 
     @Override
@@ -48,6 +49,20 @@ public class GoLApp extends SwingApp{
     protected JMenuBar createMenuBar() {
         JMenuBar mb = new JMenuBar();
         return mb;
+    }
+
+    @Override
+    public void startUp(){
+        super.startUp();
+        do{
+            try {
+                Thread.sleep(500);
+                view.getGameOfLifeModel().nextGeneration();
+                view.repaint();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } while(view.getGameOfLifeModel().isAlive() && view.getGameOfLifeModel().getGeneration() < maxGeneration);
     }
 
     /**
