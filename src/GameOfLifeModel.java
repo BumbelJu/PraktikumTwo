@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class GameOfLifeModel {
+public class GameOfLifeModel extends PatternFactory {
     private boolean[][] grid;
     private int generation;
 
@@ -13,8 +13,19 @@ public class GameOfLifeModel {
         return generation;
     }
 
-    public void setStartingGrid(){
-        grid[1][2] = grid[2][3] = grid[3][1] = grid[3][2] = grid[3][3] = true;
+    public void setStartingGrid(String startingPattern){
+        if(startingPattern.equals("Glider")){
+            grid = gliderPattern(grid.length);
+        }
+        if(startingPattern.equals("Standard")){
+            grid = standardPattern(grid.length);
+        }
+        if(startingPattern.equals("Flyer")){
+            grid = flyerPattern(grid.length);
+        }
+        if(startingPattern.equals("Cross")){
+            grid = crossPattern(grid.length);
+        }
     }
 
     public int getColumns(){
@@ -35,8 +46,8 @@ public class GameOfLifeModel {
      * */
     public boolean isAlive() {
         // TODO implement the isAlive method
-        for (int i = 0; i < 19; i++) {
-            for (int j = 0; j < grid.length; j++) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j]) {
                     return true;
                 }

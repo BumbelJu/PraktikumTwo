@@ -6,7 +6,14 @@ public class GameOfLifeView extends JComponent {
     private GameOfLifeModel gol;
     private int columns;
     private int rows;
+
     public GameOfLifeView(GameOfLifeModel gol) {
+        this.gol = gol;
+        columns = gol.getColumns();
+        rows = gol.getRows();
+    }
+
+    public void setGameOfLifeModel(GameOfLifeModel gol){
         this.gol = gol;
         columns = gol.getColumns();
         rows = gol.getRows();
@@ -25,24 +32,12 @@ public class GameOfLifeView extends JComponent {
             for(int y = 0; y < getHeight(); y+= (int) rowSize) {
                 gc.drawRect(x,y, (int) columnsSize, (int) rowSize);
                 if(gol.getGrid()[(int) (x / columnsSize)][(int) (y / rowSize)]){
-                    gc.setColor(Color.BLUE);
+                    gc.setColor(Color.RED);
                     gc.fillOval(x,y,(int) columnsSize, (int) rowSize);
                     gc.setColor(Color.BLACK);
                 }
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
