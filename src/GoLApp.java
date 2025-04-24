@@ -2,13 +2,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GoLApp extends SwingApp{
     public static boolean showComponents = false;
 
-    int maxGeneration = 30;
+    int maxGeneration = 50;
 
     private GameOfLifeView view;
     public static GameOfLifeModel gameofLifeModel;

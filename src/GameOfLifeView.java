@@ -6,6 +6,8 @@ public class GameOfLifeView extends JComponent {
     private GameOfLifeModel gol;
     private int columns;
     private int rows;
+
+
     public GameOfLifeView(GameOfLifeModel gol) {
         this.gol = gol;
         columns = gol.getColumns();
