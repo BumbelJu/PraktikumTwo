@@ -2,19 +2,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class GameOfLifeView extends JComponent {
+public class GameOfLifeView extends JComponent implements GameOfLifeListener {
     private GameOfLifeModel gol;
     private int columns;
     private int rows;
 
     public GameOfLifeView(GameOfLifeModel gol) {
         this.gol = gol;
+        // Observer hinzufügen
+       // this.gol.addObserver(this);
         columns = gol.getColumns();
         rows = gol.getRows();
     }
 
     public void setGameOfLifeModel(GameOfLifeModel gol){
         this.gol = gol;
+        this.gol.addObserver(this);
         columns = gol.getColumns();
         rows = gol.getRows();
     }
@@ -38,6 +41,17 @@ public class GameOfLifeView extends JComponent {
                 }
             }
         }
+    }
+
+    @Override
+    public void generationChanged(int generation) {
+        this.repaint();
+    }
+
+    @Override
+    public void dimensionChanged(int dimension) {
+        GoLApp.setStatusAndDimensionLabel("                            Open  ",dimension + "x" + dimension);
+        this.repaint();
     }
 }
 

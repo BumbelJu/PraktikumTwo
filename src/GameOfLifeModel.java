@@ -1,16 +1,47 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameOfLifeModel extends PatternFactory {
     private boolean[][] grid;
     private int generation;
-
+    ArrayList<GameOfLifeListener> observers = new ArrayList<>();
 
     GameOfLifeModel(int rows, int columns) {
         grid = new boolean[rows][columns];
+        notifyGenerationChanged();
+        notifyDimensionChanged();
     }
 
     public int getGeneration(){
         return generation;
+    }
+
+    public void setDimensions(int rows, int columns){
+        grid = new boolean[rows][columns];
+    }
+
+    public void addObserver(GameOfLifeListener observer){
+        observers.add(observer);
+    }
+
+    public void removeObserver(GameOfLifeListener observer){
+        observers.remove(observer);
+    }
+
+    public void notifyGenerationChanged(){
+        if (!observers.isEmpty()){
+            for(GameOfLifeListener listener : observers){
+                listener.generationChanged(generation);
+            }
+        }
+    }
+
+    public void notifyDimensionChanged(){
+        if (!observers.isEmpty()){
+            for(GameOfLifeListener listener : observers){
+                listener.dimensionChanged(grid.length);
+            }
+        }
     }
 
     public void setStartingGrid(String startingPattern){
@@ -39,7 +70,6 @@ public class GameOfLifeModel extends PatternFactory {
     public boolean[][] getGrid(){
         return grid;
     }
-
 
     /**
      * Prüfe ob es noch lebende Zellen auf dem Spielfeld gibt.
@@ -94,7 +124,7 @@ public class GameOfLifeModel extends PatternFactory {
         // Neue Generation übernehmen
         this.grid = nextState;
         generation++;
+        notifyGenerationChanged();
+        notifyDimensionChanged();
     }
-
-
 }

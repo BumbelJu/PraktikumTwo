@@ -5,21 +5,49 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GoLApp extends SwingApp{
+public class GoLApp extends SwingApp implements GameOfLifeListener{
     public static boolean showComponents = false;
 
     int maxGeneration = 30;
 
     public GameOfLifeView view;
     public static GameOfLifeModel gameofLifeModel;
-    public boolean shouldRun = false;
+    public static boolean shouldRun = false;
 
     public static int dimension = 10;
     public static String pattern = "Standard";
+    public static JLabel actualDimension;
+    public static JLabel statusLabel;
 
     @Override
     protected JComponent createToolBar() {
         JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
+        JButton startStop = new JButton("Start");
+        // Button Funktion für Start und Stop implementierung
+        startStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                if(startStop.getText().equals("Start")){
+                    shouldRun = true;
+                    startStop.setText("Stop");
+                    gameofLifeModel.notifyDimensionChanged();
+                }
+                else if (startStop.getText().equals("Stop")){
+                    shouldRun = false;
+                    startStop.setText("Start");
+                    gameofLifeModel.notifyDimensionChanged();
+                }
+            }
+        });
+
+        tb.add(startStop);
+        JButton stepButton = new JButton("Step");
+        stepButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                gameofLifeModel.nextGeneration();
+            }
+        });
+        tb.add(stepButton);
+
         return tb;
     }
 
@@ -41,14 +69,29 @@ public class GoLApp extends SwingApp{
         String msg = "Generation: ";
         Font font = status.getFont();
         int height = font.getSize() + 8;
-        int width = 8 * msg.length();
+        int width = 25 * msg.length();
         status.setText(msg);
         Dimension dim = new Dimension(width, height);
         status.setMaximumSize(dim);
         status.setMinimumSize(dim);
         status.setPreferredSize(dim);
+        status.setEnabled(false);
+        status.setDisabledTextColor(Color.blue);
         statusBar.add(new JLabel("Status: "));
         statusBar.add(status);
+        statusBar.setSize(width * 3, height *2 );
+        // Neues Label für die Dimensionsanzeigen erstellen (Praktikum 4)
+        if(shouldRun){
+            statusLabel = new JLabel("                            Open  ");
+            actualDimension = new JLabel(dimension+"x"+dimension);
+        } else {
+            statusLabel = new JLabel("                            Closed  ");
+            actualDimension = new JLabel(dimension+"x"+dimension);
+        }
+        statusLabel.setForeground(Color.blue);
+        actualDimension.setForeground(Color.lightGray);
+        statusBar.add(statusLabel);
+        statusBar.add(actualDimension);
         return statusBar;
     }
 
@@ -106,7 +149,7 @@ public class GoLApp extends SwingApp{
                 gameofLifeModel = new GameOfLifeModel(dimension,dimension);
                 gameofLifeModel.setStartingGrid(pattern);
                 view.setGameOfLifeModel(gameofLifeModel);
-                view.repaint();
+                gameofLifeModel.notifyDimensionChanged();
             }
         });
 
@@ -120,7 +163,7 @@ public class GoLApp extends SwingApp{
                 gameofLifeModel = new GameOfLifeModel(dimension,dimension);
                 gameofLifeModel.setStartingGrid(pattern);
                 view.setGameOfLifeModel(gameofLifeModel);
-                view.repaint();
+                gameofLifeModel.notifyDimensionChanged();
             }
         });
 
@@ -134,7 +177,7 @@ public class GoLApp extends SwingApp{
                 gameofLifeModel = new GameOfLifeModel(dimension,dimension);
                 gameofLifeModel.setStartingGrid(pattern);
                 view.setGameOfLifeModel(gameofLifeModel);
-                view.repaint();
+                gameofLifeModel.notifyDimensionChanged();
             }
         });
 
@@ -148,7 +191,7 @@ public class GoLApp extends SwingApp{
                 gameofLifeModel = new GameOfLifeModel(dimension,dimension);
                 gameofLifeModel.setStartingGrid(pattern);
                 view.setGameOfLifeModel(gameofLifeModel);
-                view.repaint();
+                gameofLifeModel.notifyDimensionChanged();
             }
         });
 
@@ -162,7 +205,8 @@ public class GoLApp extends SwingApp{
                 gameofLifeModel = new GameOfLifeModel(dimension,dimension);
                 gameofLifeModel.setStartingGrid(pattern);
                 view.setGameOfLifeModel(gameofLifeModel);
-                view.repaint();
+                gameofLifeModel.notifyDimensionChanged();
+
             }
         });
 
@@ -221,8 +265,6 @@ public class GoLApp extends SwingApp{
             }
         });
 
-
-
         return mb;
     }
 
@@ -238,7 +280,6 @@ public class GoLApp extends SwingApp{
             if(shouldRun){
                 gameofLifeModel.nextGeneration();
             }
-            view.repaint();
         } while(gameofLifeModel.isAlive() && gameofLifeModel.getGeneration() < maxGeneration);
     }
 
@@ -249,6 +290,32 @@ public class GoLApp extends SwingApp{
         GoLApp.gameofLifeModel = new GameOfLifeModel(dimension,dimension);
         gameofLifeModel.setStartingGrid(pattern);
         SwingApp app = new GoLApp();
+        gameofLifeModel.addObserver((GameOfLifeListener) app);
         app.startUp();
+    }
+
+
+    public static void setStatusAndDimensionLabel(String status, String dimension){
+        if(!shouldRun){
+            statusLabel.setText("                            Closed  ");
+        } else {
+            statusLabel.setText(status);
+        }
+        actualDimension.setText(dimension);
+    }
+
+    public void generationChanged(int generation) {
+        setStatusMsg("run generation " + generation);
+        view.repaint();
+    }
+
+    public void dimensionChanged(int dimension) {
+        if(!shouldRun){
+            statusLabel.setText("                            Closed  ");
+        } else {
+            statusLabel.setText("                            Open  ");
+        }
+        actualDimension.setText(dimension + "x" + dimension);
+        view.repaint();
     }
 }
