@@ -18,28 +18,21 @@ public class GoLApp extends SwingApp implements GameOfLifeListener{
     public static String pattern = "Standard";
     public static JLabel actualDimension;
     public static JLabel statusLabel;
+    JButton startStopButton;
+    JMenuItem startStop;
 
     @Override
     protected JComponent createToolBar() {
         JToolBar tb = new JToolBar(JToolBar.HORIZONTAL);
-        JButton startStop = new JButton("Start");
+        startStopButton = new JButton("Start");
         // Button Funktion für Start und Stop implementierung
-        startStop.addActionListener(new ActionListener() {
+        startStopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
-                if(startStop.getText().equals("Start")){
-                    shouldRun = true;
-                    startStop.setText("Stop");
-                    gameofLifeModel.notifyDimensionChanged();
-                }
-                else if (startStop.getText().equals("Stop")){
-                    shouldRun = false;
-                    startStop.setText("Start");
-                    gameofLifeModel.notifyDimensionChanged();
-                }
+               toggleStartStop();
             }
         });
 
-        tb.add(startStop);
+        tb.add(startStopButton);
         JButton stepButton = new JButton("Step");
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -97,11 +90,12 @@ public class GoLApp extends SwingApp implements GameOfLifeListener{
 
     @Override
     protected JMenuBar createMenuBar() {
+        JToolBar tb = (JToolBar) createToolBar();
         JMenuBar mb = new JMenuBar();
         mb.setToolTipText("Umgesetzte Funktionen in der MenuBar");
         JMenu menu = new JMenu();
         // Deklaraetion des Start - Stop Buttons und des Exit Buttons
-        JMenuItem startStop;
+        startStop = new JMenuItem("Start");
         JMenuItem exit;
 
         if(showComponents) {
@@ -119,14 +113,7 @@ public class GoLApp extends SwingApp implements GameOfLifeListener{
         // Button Funktion für Start und Stop implementierung
         startStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
-                if(startStop.getText().equals("Start")){
-                    shouldRun = true;
-                    startStop.setText("Stop");
-                }
-                else if (startStop.getText().equals("Stop")){
-                    shouldRun = false;
-                    startStop.setText("Start");
-                }
+                toggleStartStop();
             }
         });
         // Button Funktion die das Projekt schließt.
@@ -317,5 +304,17 @@ public class GoLApp extends SwingApp implements GameOfLifeListener{
         }
         actualDimension.setText(dimension + "x" + dimension);
         view.repaint();
+    }
+
+    private void toggleStartStop() {
+        shouldRun = !shouldRun;
+        String text = shouldRun ? "Stop" : "Start";
+        if (startStopButton != null) {
+            startStopButton.setText(text);
+        }
+        if (startStop != null) {
+            startStop.setText(text);
+        }
+        gameofLifeModel.notifyDimensionChanged();
     }
 }
