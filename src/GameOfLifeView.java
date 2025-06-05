@@ -23,21 +23,30 @@ public class GameOfLifeView extends JComponent implements GameOfLifeListener {
     }
 
 
-    public void paint(Graphics gc){
+    public void paint(Graphics gc) {
         super.paint(gc);
 
-        // Rechteck Größe berechnen
-        double columnsSize = (double) getWidth() / columns;
-        double rowSize = (double) getHeight() / rows;
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
 
-        gc.setColor(Color.BLACK);
-        for (int x = 0; x < getWidth(); x+= (int) columnsSize) {
-            for(int y = 0; y < getHeight(); y+= (int) rowSize) {
-                gc.drawRect(x,y, (int) columnsSize, (int) rowSize);
-                if(gol.getGrid()[(int) (x / columnsSize)][(int) (y / rowSize)]){
+        double cellWidth = (double) panelWidth / columns;
+        double cellHeight = (double) panelHeight / rows;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                int x = (int) Math.round(col * cellWidth);
+                int y = (int) Math.round(row * cellHeight);
+                int nextX = (int) Math.round((col + 1) * cellWidth);
+                int nextY = (int) Math.round((row + 1) * cellHeight);
+                int width = nextX - x;
+                int height = nextY - y;
+
+                gc.setColor(Color.BLACK);
+                gc.drawRect(x, y, width, height);
+
+                if (gol.getGrid()[col][row]) {
                     gc.setColor(Color.RED);
-                    gc.fillOval(x,y,(int) columnsSize, (int) rowSize);
-                    gc.setColor(Color.BLACK);
+                    gc.fillOval(x, y, width, height);
                 }
             }
         }
